@@ -7,6 +7,7 @@ import smtplib
 from email.message import EmailMessage
 import winsound
 import geocoder
+
 #email notification
 def email_alert(subject,body,to):
     frequency = 2500
@@ -27,10 +28,7 @@ def email_alert(subject,body,to):
     server.login(user,password)
     server.send_message(msg)
     server.quit()
-    
-
-
-    
+      
 # creating the CNN model
 model = Sequential()
 model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(64, 64, 3)))
@@ -51,7 +49,6 @@ model.fit( train_generator,
     steps_per_epoch=train_generator.n//train_generator.batch_size,
     epochs=15)
 
-
 def predict_fire_from_camera(threshold=0.5):
     cap = cv2.VideoCapture(0)  # Open the camera
 
@@ -61,8 +58,6 @@ def predict_fire_from_camera(threshold=0.5):
         frame = frame / 255.0 
         frame = np.expand_dims(frame, axis=0)
         prediction = model.predict(frame)  # Make a prediction using the trained model
-      
-        
         
         #layout of camera on screen
         cv2.imshow('Camera Feed', frame[0])  
@@ -73,16 +68,14 @@ def predict_fire_from_camera(threshold=0.5):
             current_location = g.latlng
             message = f"Fire has been detected at the following location: {current_location}"
             email_alert("FIRE ALER",message,"lukboss979@gmail.com")
-            
-            
+                        
         else:
             print('No Fire Detected')
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
-    cap.release()  # to close the camera
+    # to close the camera
+    cap.release()  
     cv2.destroyAllWindows() 
-
 
 predict_fire_from_camera(threshold=0.3)
